@@ -51,6 +51,7 @@ axis labels
     | 3 | 9 |
     | 4 | 16|
     | 5 | 25|
+    
     _**it would help if the axis labels have LaTeX formatting
 to make the labels look half-decent in the actual plot_
 - finally, you can just export the spreadsheet as a .csv file
