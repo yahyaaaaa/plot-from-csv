@@ -99,10 +99,9 @@ def parse_n_plot(csv_files, png_files=None):
             plot(data)
         plt.show()
     else:
-        for file in csv_files:
-            pos = csv_files.index(file)
-            data = parse_csv(file)
-            plot(data, png_files[pos])
+        for csv_file, png_file in zip(csv_files, png_files):
+            data = parse_csv(csv_file)
+            plot(data, png_file)
 
 
 def ret_io_lists(args):
