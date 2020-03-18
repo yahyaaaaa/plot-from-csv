@@ -72,11 +72,12 @@ def plot(data, output=None):
 
     - if output is not empty then the function will save the plot to a .png file
     """
-
-    name = data[4]
-
+    
     x_data = data[0]
     y_data = data[1]
+    x_label, y_label = data[2]
+    title = data[3]
+    name = data[4]
 
     plt.figure()
 
@@ -92,9 +93,9 @@ def plot(data, output=None):
     plt.grid(b=True, which='major', color=(0.7, 0.7, 0.7), linestyle='-', linewidth=0.5)
     plt.grid(b=True, which='minor', color=(0.8, 0.8, 0.8), linestyle='-', linewidth=0.4)
 
-    plt.xlabel(data[2][0])
-    plt.ylabel(data[2][1])
-    plt.title(data[3])
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
     plt.plot(x_data, y_data, 'bo-', markersize=4)
 
     if output:
