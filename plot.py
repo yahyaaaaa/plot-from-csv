@@ -25,6 +25,7 @@ def parse_csv(file_name):
     - y_data: list of y values
     - labels: two-element list containing the name of the x label and y label
     - title: title of the graph
+    - name: name of the file; required for knowing if log scale will be used or not
 
     - assumes that the first column of the .csv file represents the x values and the second column represents the
     y values
@@ -39,6 +40,7 @@ def parse_csv(file_name):
             data = csv.reader(f)
             labels = next(data)
             title = '{0[0]} vs. {0[1]}'.format(labels)
+            name = file_name
 
             for line in data:
                 if len(line) != 2:
@@ -52,7 +54,7 @@ def parse_csv(file_name):
                 x_data.append(float(line[0]))
                 y_data.append(float(line[1]))
 
-            return x_data, y_data, labels, title
+            return x_data, y_data, labels, title, name
 
     except FileNotFoundError:
         print('file \'{}\' not found'.format(file_name), file=stderr)
@@ -70,10 +72,19 @@ def plot(data, output=None):
     - if output is not empty then the function will save the plot to a .png file
     """
 
+    name = data[4]
+
     x_data = data[0]
     y_data = data[1]
 
     plt.figure()
+    if name.startswith('xlog'):
+        plt.xscale('log')
+    elif name.startswith('ylog'):
+        plt.yscale('log')
+    elif name.startswith('log'):
+        plt.yscale('log')
+        plt.xscale('log')
     plt.xlabel(data[2][0])
     plt.ylabel(data[2][1])
     plt.title(data[3])
