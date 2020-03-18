@@ -67,12 +67,12 @@ def plot(data, output=None):
     function for plotting the graph for the data in the .csv file(s)
 
     parameters
-    - data: a tuple containing a list of x values; a list of y values; the list of x and y labels
+    - data: a tuple containing a list of x values; a list of y values; the list of x and y labels; name of .csv file
     - output: name of the output .png file
 
     - if output is not empty then the function will save the plot to a .png file
     """
-    
+
     x_data = data[0]
     y_data = data[1]
     x_label, y_label = data[2]
