@@ -32,6 +32,28 @@ make sure you place your files in the `csvs` folder
 the data from `file1.csv` is written to `output1.png` and the data
 from `file2.csv` is written to `output2.png` and so on
 
+#### logarithmic scales
+
+if you want to plot a graph with a logarithmic scale, put `log_`,
+`xlog_`, or `ylog_` in front of the name of the .csv file depending
+on which axis you want to have a logarithmic scale
+
+##### example 1: logarithmic scale for x axis
+
+```
+./plot.py xlog_plot.csv
+```
+##### example 2: logarithmic scale for y axis
+
+```
+./plot.py ylog_plot.csv
+```
+##### example 3: logarithmic scale for both axes
+
+```
+./plot.py log_plot.csv
+```
+
 #### tips on how to format your .csv file for this program
 
 - you can make a .csv file using ms excel or, if you're like
