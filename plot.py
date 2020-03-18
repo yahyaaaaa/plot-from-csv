@@ -47,7 +47,7 @@ def parse_csv(file_name):
                     print('only two columns supported', file=stderr)
                     exit(1)
                 for element in line:
-                    if not element.isnumeric():
+                    if not check_ifnum(element):
                         print('.csv file should only contain numbers', file=stderr)
                         exit(1)
 
@@ -78,17 +78,20 @@ def plot(data, output=None):
     y_data = data[1]
 
     plt.figure()
-    if name.startswith('xlog'):
+    plt.grid(color=(0.5, 0.5, 0.5), which='both', linestyle='-', linewidth=0.4)
+
+    if name.startswith('xlog_'):
         plt.xscale('log')
-    elif name.startswith('ylog'):
+    elif name.startswith('ylog_'):
         plt.yscale('log')
-    elif name.startswith('log'):
+    elif name.startswith('log_'):
         plt.yscale('log')
         plt.xscale('log')
+
     plt.xlabel(data[2][0])
     plt.ylabel(data[2][1])
     plt.title(data[3])
-    plt.plot(x_data, y_data, 'bo-')
+    plt.plot(x_data, y_data, 'bo-', markersize=4)
 
     if output:
         plt.savefig('plots/{}'.format(output))
@@ -141,6 +144,22 @@ def ret_io_lists(args):
     else:
         print('input files don\'t match up with output files', file=stderr)
         exit(1)
+
+
+def check_ifnum(num):
+    """
+    function for checking if a string is numeric because .isnumeric() is fucking stupid and i can't be arsed to read
+    through the entire fucking String library to find something this simple
+
+    parameters:
+    - num: the string we're checking to see if it's a numeric
+    """
+
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
 
 
 def main(args):
