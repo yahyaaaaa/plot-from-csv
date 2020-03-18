@@ -9,6 +9,7 @@ def instr():
     """
     function for printing the general usage instructions
     """
+
     print('general usage: ./plot.py <csv_file(s)> [--write <png_file(s)>]')
     exit(0)
 
@@ -78,7 +79,6 @@ def plot(data, output=None):
     y_data = data[1]
 
     plt.figure()
-    plt.grid(color=(0.5, 0.5, 0.5), which='both', linestyle='-', linewidth=0.4)
 
     if name.startswith('xlog_'):
         plt.xscale('log')
@@ -87,6 +87,10 @@ def plot(data, output=None):
     elif name.startswith('log_'):
         plt.yscale('log')
         plt.xscale('log')
+
+    plt.minorticks_on()
+    plt.grid(b=True, which='major', color=(0.7, 0.7, 0.7), linestyle='-', linewidth=0.5)
+    plt.grid(b=True, which='minor', color=(0.8, 0.8, 0.8), linestyle='-', linewidth=0.4)
 
     plt.xlabel(data[2][0])
     plt.ylabel(data[2][1])
@@ -152,7 +156,7 @@ def check_ifnum(num):
     through the entire fucking String library to find something this simple
 
     parameters:
-    - num: the string we're checking to see if it's a numeric
+    - num: the string we're checking to see if it's numeric
     """
 
     try:
@@ -170,7 +174,11 @@ def main(args):
     - args: list of arguments entered in the terminal
     """
 
-    if args[1] == 'help':
+    if len(args) < 2:
+        print('''not enough arguments
+enter \'./plot.py help\' for general instructions or read README.md for detailed instructions''')
+        exit(1)
+    elif args[1] == 'help':
         if len(args) > 2:
             print('just enter \'./plot.py help\' if you need instructions', file=stderr)
             exit(1)
@@ -184,7 +192,6 @@ def main(args):
             csv_files = ret_io_lists(args[1:])[0]
             png_files = ret_io_lists(args[1:])[1]
             parse_n_plot(csv_files, png_files)
-
     else:
         csv_files = args[1:]
         parse_n_plot(csv_files)
