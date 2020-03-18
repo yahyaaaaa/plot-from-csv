@@ -24,6 +24,7 @@ def parse_csv(file_name):
     - x_data: list of x values
     - y_data: list of y values
     - labels: two-element list containing the name of the x label and y label
+    - title: title of the graph
 
     - assumes that the first column of the .csv file represents the x values and the second column represents the
     y values
@@ -37,6 +38,7 @@ def parse_csv(file_name):
         with open('csvs/{}'.format(file_name), 'r') as f:
             data = csv.reader(f)
             labels = next(data)
+            title = '{0[0]} vs. {0[1]}'.format(labels)
 
             for line in data:
                 if len(line) != 2:
@@ -50,7 +52,7 @@ def parse_csv(file_name):
                 x_data.append(float(line[0]))
                 y_data.append(float(line[1]))
 
-            return x_data, y_data, labels
+            return x_data, y_data, labels, title
 
     except FileNotFoundError:
         print('file \'{}\' not found'.format(file_name), file=stderr)
@@ -74,6 +76,7 @@ def plot(data, output=None):
     plt.figure()
     plt.xlabel(data[2][0])
     plt.ylabel(data[2][1])
+    plt.title(data[3])
     plt.plot(x_data, y_data, 'bo-')
 
     if output:
