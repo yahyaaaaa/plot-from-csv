@@ -1,7 +1,6 @@
 # csv plotter
 
-###### author: yahya ahmed adeem
-###### date created: 2020 mar 17
+###### author: yahya ahmed adeem | date created: 2020 mar 17
 
 ### description
 
