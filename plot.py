@@ -6,6 +6,54 @@ from sys import argv, stderr, exit
 from os import path, makedirs, chdir
 
 
+#####################################
+# objects
+#####################################
+
+class Graph:
+
+    def __init__(self, x_data, y_data, labels, title, name):
+        self.x_data = x_data
+        self.y_data = y_data
+        self.x_label, self.y_label = labels
+        self.title = title
+        self.name = name
+
+    def plot(self, output=None):
+        plt.figure()
+
+        if self.name.startswith('xlog_'):
+            plt.xscale('log')
+        elif self.name.startswith('ylog_'):
+            plt.yscale('log')
+        elif self.name.startswith('log_'):
+            plt.yscale('log')
+            plt.xscale('log')
+
+        plt.minorticks_on()
+        plt.grid(b=True, which='major', color=(0.7, 0.7, 0.7), linestyle='-', linewidth=0.5)
+        plt.grid(b=True, which='minor', color=(0.8, 0.8, 0.8), linestyle='-', linewidth=0.4)
+
+        plt.xlabel(self.x_label)
+        plt.ylabel(self.y_label)
+        plt.title(self.title)
+        plt.plot(self.x_data, self.y_data, 'bo-', markersize=4)
+
+        if output:
+            print(output)
+            chdir('plots')
+            try:
+                plt.savefig(output)
+            except FileNotFoundError:
+                output_dir = path.split(output)[0]
+                makedirs(output_dir)
+                plt.savefig(output)
+
+
+#####################################
+# functions
+#####################################
+
 def instr():
     """
     function for printing the general usage instructions
@@ -56,58 +104,11 @@ def parse_csv(file_name):
                 x_data.append(float(line[0]))
                 y_data.append(float(line[1]))
 
-            return x_data, y_data, labels, title, name
+            return Graph(x_data, y_data, labels, title, name)
 
     except FileNotFoundError:
         print('file \'{}\' not found'.format(file_name), file=stderr)
         exit(1)
-
-
-def plot(data, output=None):
-    """
-    function for plotting the graph for the data in the .csv file(s)
-
-    parameters
-    - data: a tuple containing a list of x values; a list of y values; the list of x and y labels; name of .csv file
-    - output: name of the output .png file
-
-    - if output is not empty then the function will save the plot to a .png file
-    """
-
-    x_data = data[0]
-    y_data = data[1]
-    x_label, y_label = data[2]
-    title = data[3]
-    name = data[4]
-
-    plt.figure()
-
-    if name.startswith('xlog_'):
-        plt.xscale('log')
-    elif name.startswith('ylog_'):
-        plt.yscale('log')
-    elif name.startswith('log_'):
-        plt.yscale('log')
-        plt.xscale('log')
-
-    plt.minorticks_on()
-    plt.grid(b=True, which='major', color=(0.7, 0.7, 0.7), linestyle='-', linewidth=0.5)
-    plt.grid(b=True, which='minor', color=(0.8, 0.8, 0.8), linestyle='-', linewidth=0.4)
-
-    plt.xlabel(x_label)
-    plt.ylabel(y_label)
-    plt.title(title)
-    plt.plot(x_data, y_data, 'bo-', markersize=4)
-
-    if output:
-        print(output)
-        chdir('plots')
-        try:
-            plt.savefig(output)
-        except FileNotFoundError:
-            output_dir = path.split(output)[0]
-            makedirs(output_dir)
-            plt.savefig(output)
 
 
 def parse_n_plot(csv_files, png_files=None):
@@ -125,13 +126,13 @@ def parse_n_plot(csv_files, png_files=None):
 
     if not png_files:
         for file in csv_files:
-            data = parse_csv(file)
-            plot(data)
+            g = parse_csv(file)
+            g.plot()
         plt.show()
     else:
         for csv_file, png_file in zip(csv_files, png_files):
-            data = parse_csv(csv_file)
-            plot(data, png_file)
+            g = parse_csv(csv_file)
+            g.plot(png_file)
 
 
 def ret_io_lists(args):
@@ -175,10 +176,12 @@ def check_ifnum(num):
         return False
 
 
+#####################################
+# main function
+#####################################
+
 def main(args):
     """
-    main function
-
     parameters
     - args: list of arguments entered in the terminal
     """
