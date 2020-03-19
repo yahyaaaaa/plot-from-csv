@@ -3,6 +3,7 @@
 import csv
 import matplotlib.pyplot as plt
 from sys import argv, stderr, exit
+from os import path, makedirs, chdir
 
 
 def instr():
@@ -99,7 +100,14 @@ def plot(data, output=None):
     plt.plot(x_data, y_data, 'bo-', markersize=4)
 
     if output:
-        plt.savefig('plots/{}'.format(output))
+        print(output)
+        chdir('plots')
+        try:
+            plt.savefig(output)
+        except FileNotFoundError:
+            output_dir = path.split(output)[0]
+            makedirs(output_dir)
+            plt.savefig(output)
 
 
 def parse_n_plot(csv_files, png_files=None):
