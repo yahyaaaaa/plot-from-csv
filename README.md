@@ -63,10 +63,21 @@ generally, anything that can be used to make spreadsheets
 horizontal axis and the other for the vertical axis
 - the first row of the spreadsheet should always be the
 axis labels
+- **optional**: the first row of the third column can be used to specify a
+color for the plot either by using rgb values or one of the following 
+preset colors:
+    - r: red
+    - g: green
+    - b: blue
+    - c: cyan
+    - m: magenta
+    - y: yellow
+    - k: black
+    - w: white
 - your spreadsheet should look something like this:
 
-    | **$x$ | $x^2$ |
-    |:---:|:---:|
+    | **$x$ | $x^2$ | 128,174,87 |
+    |:---:|:---:|:---:|
     | 1 | 1 |
     | 2 | 4 |
     | 3 | 9 |
