@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from sys import argv, stderr, exit
 from os import path, makedirs, chdir
 
+COLORS = ['r', 'g', 'b', 'c', 'm', 'y', 'k', 'w']
 
 #####################################
 # objects
@@ -12,12 +13,13 @@ from os import path, makedirs, chdir
 
 class Graph:
 
-    def __init__(self, x_data, y_data, labels, title, name):
+    def __init__(self, x_data, y_data, labels, title, name, color='b'):
         self.x_data = x_data
         self.y_data = y_data
         self.x_label, self.y_label = labels
         self.title = title
         self.name = name
+        self.color = color
 
     def plot(self, output=None):
         plt.figure()
@@ -37,7 +39,7 @@ class Graph:
         plt.xlabel(self.x_label)
         plt.ylabel(self.y_label)
         plt.title(self.title)
-        plt.plot(self.x_data, self.y_data, 'bo-', markersize=4)
+        plt.plot(self.x_data, self.y_data, marker='o', ls='-', color=self.color, markersize=4)
 
         if output:
             print(output)
@@ -88,23 +90,35 @@ def parse_csv(file_name):
     try:
         with open('csvs/{}'.format(file_name), 'r') as f:
             data = csv.reader(f)
-            labels = next(data)
+            headings = next(data)
+            if len(headings) == 3:
+                labels = headings[0:2]
+                color = headings[2]
+                if ',' in color:
+                    color = ret_color(color)
+                elif color not in COLORS:
+                    print('only certain preset colors supported, otherwise use rgb', file=stderr)
+                    exit(1)
+            elif len(headings) == 2:
+                labels = headings
+                color = None
+            else:
+                print('only two columns and a color supported', file=stderr)
+                exit(1)
             title = '{0[0]} vs. {0[1]}'.format(labels)
             name = file_name
 
             for line in data:
-                if len(line) != 2:
-                    print('only two columns supported', file=stderr)
-                    exit(1)
-                for element in line:
+                data_line = [line[0], line[1]]
+                for element in data_line:
                     if not check_ifnum(element):
                         print('.csv file should only contain numbers', file=stderr)
                         exit(1)
 
-                x_data.append(float(line[0]))
-                y_data.append(float(line[1]))
+                x_data.append(float(data_line[0]))
+                y_data.append(float(data_line[1]))
 
-            return Graph(x_data, y_data, labels, title, name)
+            return Graph(x_data, y_data, labels, title, name, color)
 
     except FileNotFoundError:
         print('file \'{}\' not found'.format(file_name), file=stderr)
@@ -159,6 +173,36 @@ def ret_io_lists(args):
         print('input files don\'t match up with output files', file=stderr)
         exit(1)
 
+
+def ret_color(color):
+    """
+    function for returning a string containing rgb values as a tuple containing those values
+    eg: '142, 52, 253' would return (142, 52, 253)
+
+    parameters:
+    - color: string containing the rgb values
+
+    returns:
+    - (r, g, b): the tuple containing rgb values
+    """
+    rgb = color.split(',')
+    if len(rgb) != 3:
+        print('rgb values should contain 3 elements only', file=stderr)
+        exit(1)
+    for i in rgb:
+        val = i.strip()
+        if not check_ifnum(val):
+            print('rgb values should be a numeric value between 0 and 255', file=stderr)
+            exit(1)
+        elif not 0 <= float(val) <= 255:
+            print('rgb values should be a numeric value between 0 and 255', file=stderr)
+            exit(1)
+
+    r = float(rgb[0].strip()) / 255
+    g = float(rgb[1].strip()) / 255
+    b = float(rgb[2].strip()) / 255
+
+    return r, g, b
 
 def check_ifnum(num):
     """
